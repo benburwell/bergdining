@@ -1,0 +1,22 @@
+{
+  "name": "bergdining.herokuapp.com",
+  "version": "1.0.0",
+  "description": "Berg Dining API",
+  "main": "index.js",
+  "dependencies": {
+    "coffee-script": "^1.9.1",
+    "hapi": "^8.4.0",
+    "request": "^2.54.0",
+    "xml2json": "^0.6.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "muhlenberg",
+    "college"
+  ],
+  "author": "dining",
+  "license": "MIT"
+}
