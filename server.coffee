@@ -55,3 +55,8 @@ server.route
       if req.query.location
         menu = (location for location in menu.locations when location.name is req.query.location)[0] or {}
       reply(menu).type('application/json')
+
+setInterval ->
+  request 'http://bergdining.herokuapp.com/', (err, res, body) ->
+    console.log 'ping'
+, 1000*60*45
