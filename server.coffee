@@ -5,28 +5,28 @@ x2j = require 'xml2json'
 processLocation = (location) ->
   ret = {}
   ret.name = location.title
-  ret.days = (processDay(day) for day in location.menu.day) if location.menu.day
-  ret.stations = (processStation(station) for station in location.menu.station) if location.menu.station
-  ret.items = (processItem(item) for item in location.menu.item) if location.menu.item
+  ret.days = (processDay(day) for day in [].concat(location.menu.day)) if location.menu.day
+  ret.stations = (processStation(station) for station in [].concat(location.menu.station)) if location.menu.station
+  ret.items = (processItem(item) for item in [].concat(location.menu.item)) if location.menu.item
   ret
 
 
 processPeriod = (period) ->
   ret = {}
   ret.name = period.title
-  ret.stations = (processStation(station) for station in period.station)
+  ret.stations = (processStation(station) for station in [].concat(period.station))
   ret
 
 processDay = (day) ->
   ret = {}
   ret.date = day.datelong
-  ret.periods = (processPeriod(period) for period in day.period)
+  ret.periods = (processPeriod(period) for period in [].concat(day.period))
   ret
 
 processStation = (station) ->
   ret = {}
   ret.name = station.title
-  ret.items = (processItem(item) for item in station.item)
+  ret.items = (processItem(item) for item in [].concat(station.item))
   ret
 
 processItem = (item) ->
@@ -35,7 +35,7 @@ processItem = (item) ->
 processXML = (xml) ->
   obj = JSON.parse x2j.toJson(xml)
   ret = {}
-  ret.locations = (processLocation(location) for location in obj.dining.locations.location)
+  ret.locations = (processLocation(location) for location in [].concat(obj.dining.locations.location))
   ret
 
 server = new Hapi.Server()
