@@ -54,7 +54,7 @@ server.route
       menu = processXML(body)
       if req.query.location
         menu = (location for location in menu.locations when location.name is req.query.location)[0] or {}
-      reply(menu).type('application/json')
+      reply(menu).type('application/json').header('Access-Control-Allow-Origin', '*')
 
 setInterval ->
   request 'http://bergdining.herokuapp.com/', (err, res, body) ->
