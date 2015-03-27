@@ -1,6 +1,7 @@
 Hapi = require 'hapi'
 request = require 'request'
 x2j = require 'xml2json'
+moment = require 'moment'
 
 processLocation = (location) ->
   ret = {}
@@ -10,7 +11,6 @@ processLocation = (location) ->
   ret.items = (processItem(item) for item in [].concat(location.menu.item)) if location.menu.item
   ret
 
-
 processPeriod = (period) ->
   ret = {}
   ret.name = period.title
@@ -18,8 +18,12 @@ processPeriod = (period) ->
   ret
 
 processDay = (day) ->
+  date = moment day.datelong
   ret = {}
-  ret.date = day.datelong
+  ret.weekday_short = date.format 'ddd'
+  ret.weekday_long = date.format 'dddd'
+  ret.date_long = date.format 'dddd MMMM Do'
+  ret.iso_date = date.toISOString()
   ret.periods = (processPeriod(period) for period in [].concat(day.period))
   ret
 
