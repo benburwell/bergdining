@@ -18,11 +18,14 @@ processPeriod = (period) ->
   ret
 
 processDay = (day) ->
-  date = moment day.datelong
+  # convert the date string to a Moment with the correct format string
+  # Dates from the XML look like: Monday - January 1, 2000
+  date = moment day.datelong, 'dddd - MMMM D, YYYY'
   ret = {}
   ret.weekday_short = date.format 'ddd'
   ret.weekday_long = date.format 'dddd'
   ret.date_long = date.format 'dddd MMMM Do'
+  ret.day_of_year = date.format 'DDD'
   ret.iso_date = date.toISOString()
   ret.periods = (processPeriod(period) for period in [].concat(day.period))
   ret
