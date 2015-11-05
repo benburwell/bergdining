@@ -1,49 +1,6 @@
 Hapi = require 'hapi'
 request = require 'request'
-x2j = require 'xml2json'
-moment = require 'moment'
-
-processLocation = (location) ->
-  ret = {}
-  ret.name = location.title
-  ret.days = (processDay(day) for day in [].concat(location.menu.day)) if location.menu.day
-  ret.stations = (processStation(station) for station in [].concat(location.menu.station)) if location.menu.station
-  ret.items = (processItem(item) for item in [].concat(location.menu.item)) if location.menu.item
-  ret
-
-processPeriod = (period) ->
-  ret = {}
-  ret.name = period.title
-  ret.stations = (processStation(station) for station in [].concat(period.station))
-  ret
-
-processDay = (day) ->
-  # convert the date string to a Moment with the correct format string
-  # Dates from the XML look like: Monday - January 1, 2000
-  date = moment day.datelong, 'dddd - MMMM D, YYYY'
-  ret = {}
-  ret.weekday_short = date.format 'ddd'
-  ret.weekday_long = date.format 'dddd'
-  ret.date_long = date.format 'dddd MMMM Do'
-  ret.day_of_year = date.format 'DDD'
-  ret.iso_date = date.toISOString()
-  ret.periods = (processPeriod(period) for period in [].concat(day.period))
-  ret
-
-processStation = (station) ->
-  ret = {}
-  ret.name = station.title
-  ret.items = (processItem(item) for item in [].concat(station.item))
-  ret
-
-processItem = (item) ->
-  item.title
-
-processXML = (xml) ->
-  obj = JSON.parse x2j.toJson(xml)
-  ret = {}
-  ret.locations = (processLocation(location) for location in [].concat(obj.dining.locations.location))
-  ret
+xmlparser = require './src/xmlparser'
 
 server = new Hapi.Server()
 
@@ -58,7 +15,7 @@ server.route
   path: '/menu.json'
   handler: (req, reply) ->
     request 'http://software.mogistic.com/muhlenberg/dining/muhlenberg_dining.xml', (err, res, body) ->
-      menu = processXML(body)
+      menu = xmlparser.processXML(body)
       if req.query.location
         menu = (location for location in menu.locations when location.name is req.query.location)[0] or {}
       reply(menu).type('application/json').header('Access-Control-Allow-Origin', '*')
